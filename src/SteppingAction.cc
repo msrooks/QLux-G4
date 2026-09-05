@@ -15,6 +15,7 @@
 #include "G4Track.hh"
 #include "G4TrackStatus.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4VProcess.hh"
 
 #include <cstdint>
 #include <fstream>
@@ -82,14 +83,11 @@ SteppingAction::~SteppingAction()
 void SteppingAction::UserSteppingAction(const G4Step* theStep)
 {
   G4Track* theTrack = theStep->GetTrack();
-
+  
   if(theTrack->GetCurrentStepNumber() == 1)
     fExpectedNextStatus = Undefined;
 
   UserTrackInformation* trackInformation = (UserTrackInformation*) theTrack->GetUserInformation();
-
-  G4StepPoint* thePrePoint = theStep->GetPreStepPoint();
-  G4VPhysicalVolume* thePrePV = thePrePoint->GetPhysicalVolume();
 
   G4StepPoint* thePostPoint = theStep->GetPostStepPoint();
   G4VPhysicalVolume* thePostPV = thePostPoint->GetPhysicalVolume();
@@ -150,31 +148,6 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
     }
   }
 
-  if(theTrack->GetParentID() == 0)
-  {
-    G4TrackVector* fSecondary = fpSteppingManager->GetfSecondary();
-
-    G4int tN2ndariesTot = fpSteppingManager->GetfN2ndariesAtRestDoIt() +
-                          fpSteppingManager->GetfN2ndariesAlongStepDoIt() +
-                          fpSteppingManager->GetfN2ndariesPostStepDoIt();
-
-    if(!fEventAction->IsConvPosSet() && tN2ndariesTot > 0)
-    {
-      for(size_t lp1 = (*fSecondary).size() - tN2ndariesTot; lp1 < (*fSecondary).size(); ++lp1)
-      {
-        const G4VProcess* creator = (*fSecondary)[lp1]->GetCreatorProcess();
-
-        if(creator)
-        {
-          G4String creatorName = creator->GetProcessName();
-
-          if(creatorName == "phot" || creatorName == "compt" || creatorName == "conv")
-            fEventAction->SetConvPos((*fSecondary)[lp1]->GetPosition());
-        }
-      }
-    }
-
-  }
 
   if(!thePostPV)
   {
@@ -184,12 +157,12 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
 
   if(theTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition())
   {
-    if(thePrePV->GetName() == "TPB_tube")
-      trackInformation->SetForceDrawTrajectory(false);
-    else if(thePostPV->GetName() == "expHall")
+    if(thePostPV->GetName() == "expHall")
       theTrack->SetTrackStatus(fStopAndKill);
 
-    if(thePostPoint->GetProcessDefinedStep()->GetProcessName() == "OpAbsorption")
+    const G4VProcess* processDefinedStep = thePostPoint->GetProcessDefinedStep();
+
+    if(processDefinedStep && processDefinedStep->GetProcessName() == "OpAbsorption")
     {
       fEventAction->IncAbsorption();
       trackInformation->AddTrackStatusFlag(absorbed);
@@ -199,14 +172,7 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
 
     if(thePostPoint->GetStepStatus() == fGeomBoundary)
     {
-      if(fExpectedNextStatus == StepTooSmall)
-      {
-        if(boundaryStatus != StepTooSmall)
-          fExpectedNextStatus = Undefined;
-      }
-
-      fExpectedNextStatus = Undefined;
-
+      
       switch(boundaryStatus)
       {
         case Absorption:
@@ -241,8 +207,6 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
           break;
       }
 
-      if(thePostPV->GetName() == "sphere")
-        trackInformation->AddTrackStatusFlag(hitSphere);
     }
   }
 }

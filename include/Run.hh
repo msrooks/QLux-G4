@@ -39,8 +39,6 @@ class Run : public G4Run
     fPixelsAboveThreshold2 += count * count;
   }
 
-  void IncrementWLSCount() { ++fWLSCount; }
-  void IncrementDetectedWLSCount() { ++fDetectedWLSCount; }
     
   void Merge(const G4Run* run) override;
 
@@ -57,12 +55,6 @@ class Run : public G4Run
   G4int fBoundaryAbsorptionCount2;
   G4int fPixelsAboveThreshold;
   G4int fPixelsAboveThreshold2;
-
-  G4int fWLSCount;
-
-  G4int fDetectedWLSCount;    
-
-
 
 };
 

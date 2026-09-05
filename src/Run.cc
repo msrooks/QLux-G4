@@ -12,8 +12,6 @@ Run::Run()
   fAbsorptionCount = fAbsorptionCount2 = 0;
   fBoundaryAbsorptionCount = fBoundaryAbsorptionCount2 = 0;
   fPixelsAboveThreshold = fPixelsAboveThreshold2 = 0;
-  fWLSCount = 0;
-  fDetectedWLSCount = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -36,8 +34,6 @@ void Run::Merge(const G4Run* run)
   fAbsorptionCount2 += localRun->fAbsorptionCount2;
   fBoundaryAbsorptionCount += localRun->fBoundaryAbsorptionCount;
   fBoundaryAbsorptionCount2 += localRun->fBoundaryAbsorptionCount2;
-  fWLSCount += localRun->fWLSCount;
-  fDetectedWLSCount += localRun->fDetectedWLSCount;
   G4Run::Merge(run);
 }
 
@@ -50,6 +46,9 @@ void Run::EndOfRun()
   G4int prec = G4cout.precision();
 
   G4double n_evt = (G4double) numberOfEvent;
+  if (n_evt == 0.0)
+    return;
+
   G4cout << "The run was " << numberOfEvent << " events." << G4endl;
 
   G4cout.precision(4);
@@ -107,8 +106,12 @@ void Run::EndOfRun()
   G4cout << "Number of photons absorbed at boundary per event:\t " << bdry/1000.0
          << "k +- " << rms_bdry/1000.0 << "k" << G4endl;
 
-  G4double detPercent = hits *100 / scint;
-  G4cout << "Detectection yield:\t " << detPercent << G4endl;
+  G4double detPercent = 0.0;
+
+  if (scint > 0.0)
+    detPercent = hits * 100.0 / scint;
+
+  G4cout << "Detection yield:\t " << detPercent << G4endl;
 
   G4cout << G4endl;
   G4cout.precision(prec);
@@ -116,10 +119,4 @@ void Run::EndOfRun()
   G4double unaccounted = scint  - (hits + absorb + bdry);
   G4cout << "Unaccounted photons per event:\t " << unaccounted << G4endl;
   
-  //G4double wlsPhotons = G4double(fWLSCount);
-  //G4cout << "Number of wavelength-shifted photons per event:\t " << wlsPhotons << G4endl;
-
-  G4double detectedWLS = G4double(fDetectedWLSCount);
-  G4cout << "Number of detected WLS photons per event:\t " << detectedWLS << G4endl;
-
 }

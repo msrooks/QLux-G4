@@ -24,7 +24,7 @@ int main(int argc, char** argv)
   }
 
   auto runManager = G4RunManagerFactory::CreateRunManager();
-
+  
   DetectorConstruction* det = new DetectorConstruction();
   runManager->SetUserInitialization(det);
 
@@ -33,9 +33,8 @@ int main(int argc, char** argv)
 
   G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
   auto opticalParams               = G4OpticalParameters::Instance();
-
-  opticalParams->SetWLSTimeProfile("delta");
-
+  
+  opticalParams->SetScintByParticleType(true);
   opticalParams->SetScintTrackSecondariesFirst(true);
 
   opticalParams->SetCerenkovMaxPhotonsPerStep(100);
@@ -45,7 +44,7 @@ int main(int argc, char** argv)
   physicsList->RegisterPhysics(opticalPhysics);
   runManager->SetUserInitialization(physicsList);
 
-  runManager->SetUserInitialization(new ActionInitialization(det));
+  runManager->SetUserInitialization(new ActionInitialization());
 
   // initialize visualization
   G4VisManager* visManager = new G4VisExecutive;

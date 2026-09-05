@@ -14,8 +14,6 @@
 #include "G4Track.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4VTouchable.hh"
-#include "Run.hh"
-#include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
 
 
@@ -86,19 +84,6 @@ G4bool aSeSD::ProcessHits_boundary(const G4Step* aStep, G4TouchableHistory*)
   G4Track* track = aStep->GetTrack();
   if(track->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition())
     return false;
-
-  // Retrieve the photon's kinetic energy
-  G4double energy = track->GetKineticEnergy();
-  //G4cout << "Detected photon energy: " << energy/eV << " eV" << G4endl;
-  
-  // Now you can decide if this photon is wavelength shifted
-  if(energy < 4 * eV) {
-    // This photon falls within the WLS energy window
-    Run* run = static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-    if(run) {
-      run->IncrementDetectedWLSCount();
-    }
-  }
   
   // Continue with a-Se pixel hit processing
   G4int pixelNumber = aStep->GetPostStepPoint()->GetTouchable()->GetReplicaNumber(1);

@@ -20,8 +20,8 @@ class SteppingAction : public G4UserSteppingAction
  private:
 
   EventAction* fEventAction;
-
   G4OpBoundaryProcessStatus fExpectedNextStatus;
+
 };
 
 #endif

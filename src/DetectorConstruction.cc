@@ -3,32 +3,18 @@
 #include "aSeSD.hh"
 
 #include "globals.hh"
-#include "G4Box.hh"
-#include "G4GeometryManager.hh"
 #include "G4GenericMessenger.hh"
-#include "G4LogicalBorderSurface.hh"
-#include "G4LogicalSkinSurface.hh"
 #include "G4LogicalVolume.hh"
-#include "G4LogicalVolumeStore.hh"
 #include "G4Material.hh"
-#include "G4MaterialTable.hh"
-#include "G4OpticalSurface.hh"
 #include "G4PhysicalConstants.hh"
-#include "G4PhysicalVolumeStore.hh"
 #include "G4PVPlacement.hh"
-#include "G4RunManager.hh"
 #include "G4SDManager.hh"
-#include "G4SolidStore.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
 #include "G4Tubs.hh"
-#include "G4UImanager.hh"
 #include "G4VisAttributes.hh"
 #include "G4NistManager.hh"
 #include "G4MaterialPropertiesTable.hh"
-#include "G4Scintillation.hh"
-#include "G4OpWLS.hh"
-
 
 DetectorConstruction::DetectorConstruction()
   : fGAr_mt(nullptr)
@@ -38,12 +24,11 @@ DetectorConstruction::DetectorConstruction()
   fworld_physical = nullptr;
 
   fH = fC = fN = fO = fSi = fAl = fMg = fFe = nullptr;
-  fGAr = fVacuum = fAir = fGlass = ftpb = fAl_6061 = fg10 = fpeek = nullptr;
+  fGAr = fVacuum = fAir = fGlass = fAl_6061 = fg10 = fpeek = nullptr;
   fBr = fCa = fNa = fTi = nullptr;
   fSiO2 = fAl2O3 = fFe2O3 = fCaO = fMgO = fNa2O = fTiO2 = nullptr;
   ffibrous_glass = fepoxy_resin = fFR4 = nullptr; 
 
-  fSaveThreshold = 0;
   fBigQL = false;
   fMainVolume = nullptr;
 
@@ -103,7 +88,6 @@ void DetectorConstruction::DefineMaterials()
   fTiO2 =          new G4Material("TiO2",          4.230*g/cm3, 2);  fTiO2->AddElement(fTi, 1); fTiO2->AddElement(fO, 2);
   fAir =           new G4Material("Air",           0.001*g/cm3, 2);  fAir->AddElement(fN, 70*perCent); fAir->AddElement(fO, 30*perCent);
   fGlass =         new G4Material("Glass",         1.030*g/cm3, 2);  fGlass->AddElement(fC, 91.533*perCent); fGlass->AddElement(fH, 8.467*perCent);
-  ftpb =           new G4Material("TPB",           1.080*g/cm3, 2);  ftpb->AddElement (fC, 28); ftpb->AddElement (fH, 22);
   fAl_6061 =       new G4Material("Al_6061",       2.700*g/cm3, 4);  fAl_6061->AddElement(fAl, 0.980); fAl_6061->AddElement(fMg, 0.010); fAl_6061->AddElement(fSi, 0.006); fAl_6061->AddElement(fFe, 0.004);
   fg10 =           new G4Material("G10",           1.700*g/cm3, 4);  fg10->AddElement(fSi, 1); fg10->AddElement(fO , 2); fg10->AddElement(fC , 3); fg10->AddElement(fH , 3);
   fpeek =          new G4Material("Peek",          1.310*g/cm3, 3);  fpeek->AddElement(fC, 19); fpeek->AddElement(fH, 12); fpeek->AddElement(fO, 3);  
@@ -206,42 +190,6 @@ void DetectorConstruction::DefineMaterials()
   fVacuum->SetMaterialPropertiesTable(vacuum_mt);
   fAir->SetMaterialPropertiesTable(vacuum_mt); 
 
-  // https://link.springer.com/article/10.1140/epjc/s10052-018-5807-z
-  std::vector<G4double> TpbEmmisionEnergies = {
-    2.1*eV, 2.1*eV, 2.2*eV, 2.2*eV, 2.2*eV, 2.2*eV, 2.2*eV, 2.2*eV, 2.2*eV, 2.2*eV, 
-    2.2*eV, 2.2*eV, 2.2*eV, 2.3*eV, 2.3*eV, 2.3*eV, 2.3*eV, 2.3*eV, 2.3*eV, 2.3*eV, 
-    2.3*eV, 2.3*eV, 2.3*eV, 2.3*eV, 2.4*eV, 2.4*eV, 2.4*eV, 2.4*eV, 2.4*eV, 2.4*eV, 
-    2.4*eV, 2.4*eV, 2.5*eV, 2.5*eV, 2.5*eV, 2.5*eV, 2.5*eV, 2.5*eV, 2.5*eV, 2.5*eV, 
-    2.6*eV, 2.6*eV, 2.6*eV, 2.6*eV, 2.6*eV, 2.6*eV, 2.6*eV, 2.7*eV, 2.7*eV, 2.7*eV, 
-    2.7*eV, 2.7*eV, 2.7*eV, 2.8*eV, 2.8*eV, 2.8*eV, 2.8*eV, 2.9*eV, 2.9*eV, 2.9*eV, 
-    2.9*eV, 3.0*eV, 3.0*eV, 3.0*eV, 3.0*eV, 3.0*eV, 3.1*eV, 3.1*eV, 3.1*eV, 3.1*eV, 
-    3.1*eV, 3.1*eV, 3.1*eV, 3.1*eV, 3.1*eV, 3.1*eV, 3.1*eV, 3.1*eV, 3.1*eV, 3.1*eV, 
-    3.1*eV, 3.1*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 
-    3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 3.2*eV, 
-    3.2*eV, 3.2*eV, 3.2*eV};
-
-  
-  std::vector<G4double> TpbEmmisionSpectrum = {
-    0.0, 0.0, 0.0, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.002, 0.002, 
-    0.002, 0.003, 0.003, 0.003, 0.004, 0.004, 0.005, 0.005, 0.006, 0.007, 0.008, 0.01, 
-    0.011, 0.013, 0.015, 0.017, 0.02, 0.023, 0.026, 0.03, 0.034, 0.04, 0.046, 0.054, 0.062, 
-    0.071, 0.082, 0.094, 0.11, 0.125, 0.143, 0.163, 0.186, 0.213, 0.246, 0.284, 0.324, 0.377, 
-    0.423, 0.488, 0.541, 0.603, 0.664, 0.722, 0.793, 0.866, 0.948, 1.0, 0.968, 0.885, 0.779, 
-    0.662, 0.573, 0.493, 0.422, 0.348, 0.296, 0.248, 0.216, 0.182, 0.154, 0.129, 0.109, 0.091, 
-    0.078, 0.065, 0.056, 0.047, 0.04, 0.033, 0.028, 0.024, 0.02, 0.017, 0.014, 0.012, 0.01, 
-    0.009, 0.007, 0.006, 0.005, 0.004, 0.004, 0.003, 0.002, 0.002, 0.002, 0.001, 0.001, 0.0};
-
-  std::vector<G4double> TpbAbsorptionEnergies = {7.0*eV, 8.0*eV, 9.0*eV, 10.0*eV, 11.0*eV};
-  std::vector<G4double> TpbAbsorptionLength = {400*nm, 400*nm, 400*nm, 400*nm, 400*nm};
-
-  G4MaterialPropertiesTable* tpb_pt = new G4MaterialPropertiesTable();
-  tpb_pt->AddProperty("RINDEX", GArIndexEnergy, GArIndexSpectrum);
-  tpb_pt->AddProperty("WLSABSLENGTH", TpbAbsorptionEnergies, TpbAbsorptionLength);
-  tpb_pt->AddProperty("WLSCOMPONENT", TpbEmmisionEnergies, TpbEmmisionSpectrum);
-  tpb_pt->AddConstProperty("WLSTIMECONSTANT", 2.5*ns);
-  tpb_pt->AddConstProperty("WLSYIELD", 0.6, true);
-  ftpb->SetMaterialPropertiesTable(tpb_pt);
-
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
@@ -251,31 +199,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   fworld_physical = new G4PVPlacement(0, G4ThreeVector(), fworld_logical, "world", 0, false, 0);
   fworld_logical->SetVisAttributes(G4VisAttributes::GetInvisible());
   fMainVolume = new MainVolume(0, G4ThreeVector(), fworld_logical, false, 0, this, fBigQL);
-  
-  // Add this section to enable particle-specific scintillation
-  G4Scintillation* scintillationProcess = new G4Scintillation("Scintillation");
-
-  // Enable particle-specific scintillation yields
-  scintillationProcess->SetScintillationByParticleType(true);
-
-  // Get the particle table
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4ParticleTable::G4PTblDicIterator* particleIterator = particleTable->GetIterator();
-
-  // Loop over all particles and attach the scintillation process
-  particleIterator->reset();
-  while ((*particleIterator)()) {
-      G4ParticleDefinition* particle = particleIterator->value();
-      G4ProcessManager* pmanager = particle->GetProcessManager();
-
-      // Ensure that the particle has a valid process manager
-      if (pmanager && scintillationProcess->IsApplicable(*particle)) {
-          pmanager->AddProcess(scintillationProcess);
-          pmanager->SetProcessOrderingToLast(scintillationProcess, idxAtRest);
-          pmanager->SetProcessOrderingToLast(scintillationProcess, idxPostStep);
-      }
-  }
-  
+    
   return fworld_physical;
 }
 

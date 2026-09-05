@@ -1,5 +1,4 @@
 #include "EventAction.hh"
-#include "DetectorConstruction.hh"
 #include "aSeHit.hh"
 #include "Run.hh"
 #include "Trajectory.hh"
@@ -26,9 +25,8 @@ namespace
   G4Mutex photonFileMutex = G4MUTEX_INITIALIZER;
 }
 
-EventAction::EventAction(const DetectorConstruction* det)
-  : fDetector(det)
-  , fHitCollID(-1)
+EventAction::EventAction()
+  : fHitCollID(-1)
   , fVerbose(0)
   , fPixelThreshold(1) 
   , fForcedrawphotons(false)
@@ -41,7 +39,6 @@ EventAction::EventAction(const DetectorConstruction* det)
   fPhotonCount_Scint       = 0;
   fAbsorptionCount         = 0;
   fBoundaryAbsorptionCount = 0;
-  fConvPosSet = false;
   fPixelsAboveThreshold = 0;
 
   fPhotonEvents.reserve(50000);
@@ -60,7 +57,6 @@ void EventAction::BeginOfEventAction(const G4Event*)
   fAbsorptionCount         = 0;
   fBoundaryAbsorptionCount = 0;
   
-  fConvPosSet = false;
   fPixelsAboveThreshold = 0;
   fInitialTrackLength = 0.0;
 
@@ -116,13 +112,11 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
   }
 
   if (hitCollection) {
-    G4ThreeVector reconPos(0., 0., 0.);
     size_t hits = hitCollection->entries();
     
     // Gather information from all a-Se pixel hits
     for (size_t i = 0; i < hits; ++i) {
         fHitCount += (*hitCollection)[i]->GetPhotonCount();
-        reconPos += (*hitCollection)[i]->GetPixelPos() * (*hitCollection)[i]->GetPhotonCount();
         
         if ((*hitCollection)[i]->GetPhotonCount() >= fPixelThreshold) {
             ++fPixelsAboveThreshold;
@@ -138,18 +132,7 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
         G4cout << "Pixel " << i << ": " << (*hitCollection)[i]->GetPhotonCount() << " photons detected" << G4endl;
       }
     }
-  
-
-    // Reconstruct the position of the hits
-    if (fHitCount > 0) {
-        reconPos /= fHitCount;
-        if (fVerbose > 0) {
-            G4cout << "\tReconstructed position of hits on a-Se array : " << reconPos / mm << G4endl;
-        }
-        fReconPos = reconPos;
-    }
-     
-    // Draw all hits
+       
     hitCollection->DrawAllHits();
 
   }
@@ -204,12 +187,6 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
   run->IncAbsorption(fAbsorptionCount);
   run->IncBoundaryAbsorption(fBoundaryAbsorptionCount);
   run->IncPixelsAboveThreshold(fPixelsAboveThreshold);
-
-  // If we have set the flag to save 'special' events, save here
-  if(fPhotonCount_Scint < fDetector->GetSaveThreshold())
-  {
-    G4RunManager::GetRunManager()->rndmSaveThisEvent();
-  }
 }
 
 
