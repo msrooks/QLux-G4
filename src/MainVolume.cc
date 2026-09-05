@@ -20,13 +20,9 @@
 #include "G4FieldManager.hh"
 #include "G4UserLimits.hh"
 
-namespace {
-constexpr bool BIG_QL = false;  // false = Little QL, true = Big QL
-}
-
 MainVolume::MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
                              G4LogicalVolume* pMotherLogical, G4bool pMany,
-                             G4int pCopyNo, DetectorConstruction* c)
+                             G4int pCopyNo, DetectorConstruction* c, G4bool bigQL)
   // Pass info to the G4PVPlacement constructor
   : G4PVPlacement(pRot, tlate,
                   // Temp logical volume must be created here
@@ -35,6 +31,7 @@ MainVolume::MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
                                       0, 0, 0),
                   "cryostat", pMotherLogical, pMany, pCopyNo)
   , fConstructor(c)
+  , fBigQL(bigQL)
 {
   
   // CRYOSTAT AND LAR AS SCINTILLATOR
@@ -51,7 +48,7 @@ MainVolume::MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
   pixelboard = new G4Tubs("pixelboard", 0*cm, 2.2*cm, 1*mm, 0.*deg, 360.*deg);
   pixelboard_logical = new G4LogicalVolume(pixelboard, G4Material::GetMaterial("FR4"), "pixelboard_logical", 0, 0, 0);
   
-  G4double pixelboard_z = BIG_QL ? -2.002 * mm : -1.802 * mm;
+  G4double pixelboard_z = fBigQL ? -2.002 * mm : -1.802 * mm;
   new G4PVPlacement(0, G4ThreeVector(0, 0, pixelboard_z), pixelboard_logical, "pixelboard", fScint_logical, false, 0);
 
   
@@ -60,10 +57,10 @@ MainVolume::MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
 
   // PIXEL DETECTORS 
   
-  G4double sensor_x = BIG_QL ? 1.0 * mm : 0.75 * mm;
-  G4double sensor_y = BIG_QL ? 1.99 * mm : 1.0 * mm;
-  G4double aSeSurface_x = BIG_QL ? 0.999 * mm : 0.749 * mm;
-  G4double aSeSurface_y = BIG_QL ? 1.989 * mm : 0.999 * mm;
+  G4double sensor_x = fBigQL ? 1.0 * mm : 0.75 * mm;
+  G4double sensor_y = fBigQL ? 1.99 * mm : 1.0 * mm;
+  G4double aSeSurface_x = fBigQL ? 0.999 * mm : 0.749 * mm;
+  G4double aSeSurface_y = fBigQL ? 1.989 * mm : 0.999 * mm;
 
   auto sensor_solid = new G4Box("aSeSensor_solid", sensor_x, sensor_y, 0.01 * mm);
   auto fASeSurface_solid = new G4Box("aSeSurface_solid", aSeSurface_x, aSeSurface_y, 0.005 * mm);
@@ -78,9 +75,9 @@ MainVolume::MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
   z = 0;
   
   
-  const char* lid_file = BIG_QL ? "./lidBig.obj" : "./lidLittle.obj";
-  const char* anode_file = BIG_QL ? "./anodeBig.obj" : "./anodeLittle.obj";
-  const char* spacer_file = BIG_QL ? "./spacerBig.obj" : "./spacerLittle.obj";
+  const char* lid_file = fBigQL ? "./lidBig.obj" : "./lidLittle.obj";
+  const char* anode_file = fBigQL ? "./anodeBig.obj" : "./anodeLittle.obj";
+  const char* spacer_file = fBigQL ? "./spacerBig.obj" : "./spacerLittle.obj";
 
   // lid
   auto flid_mesh = CADMesh::TessellatedMesh::FromOBJ(lid_file);
@@ -110,7 +107,7 @@ for (int row = 0; row < 3; ++row) {
         new G4PVPlacement(nullptr, G4ThreeVector(x, y, 0), flid_logical, "lid", fScint_logical, false, id);
         new G4PVPlacement(nullptr, G4ThreeVector(x, y, 0.001 * mm), fpin_logical, "pin", fScint_logical, false, id);
         
-        G4double spacer_z = BIG_QL ? -1.101 * mm : -0.801 * mm;
+        G4double spacer_z = fBigQL ? -1.101 * mm : -0.801 * mm;
         new G4PVPlacement(nullptr, G4ThreeVector(x, y, spacer_z), spacer_logical, "spacer", fScint_logical, false, id);
 
 
@@ -128,8 +125,8 @@ void MainVolume::PlacePixels(G4LogicalVolume* sensor_log, G4double& z)
 {
     G4double pitch = 10.2 * mm;
     
-    G4double dx = BIG_QL ? -0.05 * mm : -0.02 * mm;
-    G4double dy = BIG_QL ? 1.51 * mm : 0.56 * mm;
+    G4double dx = fBigQL ? -0.05 * mm : -0.02 * mm;
+    G4double dy = fBigQL ? 1.51 * mm : 0.56 * mm;
     
   
     int id = 0;

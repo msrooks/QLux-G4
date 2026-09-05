@@ -15,7 +15,7 @@ class MainVolume : public G4PVPlacement
  public:
   MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
                 G4LogicalVolume* pMotherLogical, G4bool pMany, G4int pCopyNo,
-                DetectorConstruction* c);
+                DetectorConstruction* c, G4bool bigQL);
 
   G4LogicalVolume* GetLogASeSurface() { return fASeSurface_logical; }
   G4LogicalVolume* GetLogScint() { return fScint_logical; }
@@ -34,6 +34,7 @@ class MainVolume : public G4PVPlacement
   void CopyValues();
 
   DetectorConstruction* fConstructor;
+  G4bool fBigQL;
 
   // Materials
   G4Material* hdpe;

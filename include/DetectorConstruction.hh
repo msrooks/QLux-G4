@@ -10,6 +10,7 @@ class aSeSD;
 class G4Box;
 class G4Element;
 class G4LogicalVolume;
+class G4GenericMessenger;
 class G4Material;
 class G4MaterialPropertiesTable;
 class G4Sphere;
@@ -26,6 +27,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   void ConstructSDandField() override;
 
   void SetSaveThreshold(G4int);
+  void SetGeometry(const G4String& geometry);
 
   G4int GetSaveThreshold() const { return fSaveThreshold; };
   
@@ -93,6 +95,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
   
   G4int fSaveThreshold;
+  G4bool fBigQL;
+  G4GenericMessenger* fMessenger;
 
   //static G4bool fSphereOn;
   //G4double fRefl;

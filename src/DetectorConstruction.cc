@@ -5,6 +5,7 @@
 #include "globals.hh"
 #include "G4Box.hh"
 #include "G4GeometryManager.hh"
+#include "G4GenericMessenger.hh"
 #include "G4LogicalBorderSurface.hh"
 #include "G4LogicalSkinSurface.hh"
 #include "G4LogicalVolume.hh"
@@ -43,17 +44,31 @@ DetectorConstruction::DetectorConstruction()
   ffibrous_glass = fepoxy_resin = fFR4 = nullptr; 
 
   fSaveThreshold = 0;
+  fBigQL = false;
+  fMainVolume = nullptr;
+
+  fMessenger = new G4GenericMessenger(this, "/QLux/", "QLux detector control");
+  auto& geometryCmd = fMessenger->DeclareMethod("Geometry", &DetectorConstruction::SetGeometry,
+                                                "Select QLux geometry: Little or Big.");
+  geometryCmd.SetParameterName("geometry", false);
+  geometryCmd.SetCandidates("Little Big");
   
   DefineMaterials();
 }
 
 DetectorConstruction::~DetectorConstruction()
 {
+  delete fMessenger;
   if(fMainVolume)
   {
     delete fMainVolume;
   }
   delete fGAr_mt;
+}
+
+void DetectorConstruction::SetGeometry(const G4String& geometry)
+{
+  fBigQL = (geometry == "Big");
 }
 
 void DetectorConstruction::DefineMaterials()
@@ -235,7 +250,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   fworld_logical = new G4LogicalVolume(fworld, fVacuum, "world_logical", 0, 0, 0);
   fworld_physical = new G4PVPlacement(0, G4ThreeVector(), fworld_logical, "world", 0, false, 0);
   fworld_logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-  fMainVolume = new MainVolume(0, G4ThreeVector(), fworld_logical, false, 0, this);
+  fMainVolume = new MainVolume(0, G4ThreeVector(), fworld_logical, false, 0, this, fBigQL);
   
   // Add this section to enable particle-specific scintillation
   G4Scintillation* scintillationProcess = new G4Scintillation("Scintillation");
