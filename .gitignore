@@ -1,0 +1,24 @@
+build/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install_manifest.txt
+
+# Compiled binaries and object files
+*.o
+*.so
+*.dylib
+*.dll
+*.exe
+QLux
+
+# Generated local artifacts
+*.root
+*.log
+*.bin
+
+# Windows metadata occasionally copied into WSL
+*:Zone.Identifier

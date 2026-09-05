@@ -1,0 +1,119 @@
+#ifndef EventAction_h
+#define EventAction_h 1
+
+#include "EventMessenger.hh"
+#include "G4UIcmdWithAString.hh"
+#include "globals.hh"
+#include "G4ThreeVector.hh"
+#include "G4UserEventAction.hh"
+#include <array>
+#include <vector>
+
+class G4Event;
+class DetectorConstruction;
+
+class EventAction : public G4UserEventAction
+{
+ public:
+  EventAction(const DetectorConstruction*);
+  ~EventAction();
+
+ public:
+  void AddTrackLength(G4double stepLength) { fInitialTrackLength += stepLength; }
+  G4double GetTrackLength() const { return fInitialTrackLength; }
+  
+  void BeginOfEventAction(const G4Event*) override;
+  void EndOfEventAction(const G4Event*) override;
+
+  void SetEventVerbose(G4int v) { fVerbose = v; }
+
+  void SetPixelThreshold(G4int t) { fPixelThreshold = t; }
+  
+  void SetPhotonFileName(const G4String& name) { fPhotonFileName = name; }
+  void SetEDepFileName(const G4String& name) { fEDepFileName = name; }
+
+  const G4String& GetPhotonFileName() const { return fPhotonFileName; }
+  const G4String& GetEDepFileName() const { return fEDepFileName; }
+
+  void FlushPhotonData();
+  
+  void SetForceDrawPhotons(G4bool b) { fForcedrawphotons = b; }
+  void SetForceDrawNoPhotons(G4bool b) { fForcenophotons = b; }
+
+  void IncPhotonCount_Scint() { ++fPhotonCount_Scint; }
+  void IncAbsorption() { ++fAbsorptionCount; }
+  void IncBoundaryAbsorption() { ++fBoundaryAbsorptionCount; }
+  void IncHitCount(G4int i = 1) { fHitCount += i; }
+
+  void SetReconPos(const G4ThreeVector& p) { fReconPos = p; }
+  void SetConvPos(const G4ThreeVector& p)
+  
+  
+  
+  {
+    fConvPos    = p;
+    fConvPosSet = true;
+  }
+  
+  G4int GetPhotonCount_Scint() const { return fPhotonCount_Scint; }
+  G4int GetHitCount() const { return fHitCount; }
+  
+  G4int GetAbsorptionCount() const { return fAbsorptionCount; }
+  G4int GetBoundaryAbsorptionCount() const { return fBoundaryAbsorptionCount; }
+
+  G4ThreeVector GetReconPos() { return fReconPos; }
+  G4ThreeVector GetConvPos() { return fConvPos; }
+  G4double IsConvPosSet() { return fConvPosSet; }
+
+  // Gets the total photon count produced
+  G4int GetPhotonCount() { return fPhotonCount_Scint; }
+
+  void IncPixelsAboveThreshold() { ++fPixelsAboveThreshold; }
+  G4int GetPixelsAboveThreshold() { return fPixelsAboveThreshold; }
+
+ private:
+  struct PhotonEvent
+  {
+    G4String fileName;
+    G4int eventID;
+    G4int scintillationPhotons;
+    std::array<G4int, 9> pixelCounts{};
+  };
+
+  std::vector<PhotonEvent> fPhotonEvents;
+
+  EventMessenger* fEventMessenger;
+  const DetectorConstruction* fDetector;
+  
+  G4double fInitialTrackLength;
+  
+  G4int fHitCollID;
+
+  G4int fVerbose;
+  G4String fPhotonFileName = "photons.bin";
+  G4String fEDepFileName = "dEdx.bin";
+  G4int fPixelThreshold;
+  G4bool fForcedrawphotons;
+  G4bool fForcenophotons;
+
+  G4int fHitCount;
+  G4int fPhotonCount_Scint;
+  G4int fAbsorptionCount;
+  G4int fBoundaryAbsorptionCount;
+
+  
+
+  //G4int fChargeCollID = -1;
+
+  // These only have meaning if totE > 0
+  // If totE = 0 then these won't be set by EndOfEventAction
+  
+  G4ThreeVector fReconPos;  // Also relies on hitCount>0
+  G4ThreeVector fConvPos;   // true (initial) converstion position
+  G4bool fConvPosSet;
+  
+  G4int fPixelsAboveThreshold;
+};
+
+#endif
+

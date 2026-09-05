@@ -1,0 +1,11 @@
+/run/verbose 0
+/control/verbose 0
+/tracking/verbose 0
+/process/optical/verbose 0
+/run/initialize
+/QLux/eventVerbose 0
+
+/QLux/PhotonFileName QLL100k_37mm.bin
+/QLux/EDepFileName QLL100k_37mm_dEdx.bin
+/gun/position 0 0 37 mm
+/run/beamOn 100
