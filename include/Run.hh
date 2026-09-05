@@ -4,7 +4,7 @@
 #include "globals.hh"
 #include "G4Run.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 class Run : public G4Run
 {

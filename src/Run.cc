@@ -2,7 +2,7 @@
 #include "Run.hh"
 #include "G4SystemOfUnits.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 Run::Run()
   : G4Run()
@@ -14,11 +14,11 @@ Run::Run()
   fPixelsAboveThreshold = fPixelsAboveThreshold2 = 0;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 Run::~Run() {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void Run::Merge(const G4Run* run)
 {
@@ -37,7 +37,7 @@ void Run::Merge(const G4Run* run)
   G4Run::Merge(run);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void Run::EndOfRun()
 {

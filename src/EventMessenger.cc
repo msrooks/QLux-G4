@@ -3,7 +3,7 @@
 #include "G4UIcmdWithABool.hh"
 #include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWithAString.hh"
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 EventMessenger::EventMessenger(EventAction* event)
   : fEventAction(event)
@@ -33,7 +33,7 @@ EventMessenger::EventMessenger(EventAction* event)
     "(Lower priority than /QLux/forceDrawPhotons)");
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 EventMessenger::~EventMessenger()
 {
@@ -44,7 +44,7 @@ EventMessenger::~EventMessenger()
   delete fEDepFileNameCmd;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void EventMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {

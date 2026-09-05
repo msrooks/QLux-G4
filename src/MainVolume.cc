@@ -15,8 +15,8 @@
 #include "G4UserLimits.hh"
 
 MainVolume::MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
-                             G4LogicalVolume* pMotherLogical, G4bool pMany,
-                             G4int pCopyNo, DetectorConstruction* c, G4bool bigQL)
+                       G4LogicalVolume* pMotherLogical, G4bool pMany,
+                       G4int pCopyNo, G4bool bigQL)
   // Pass info to the G4PVPlacement constructor
   : G4PVPlacement(pRot, tlate,
                   // Temp logical volume must be created here
@@ -24,7 +24,6 @@ MainVolume::MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
                                       G4Material::GetMaterial("Vacuum"), "temp",
                                       0, 0, 0),
                   "cryostat", pMotherLogical, pMany, pCopyNo)
-  , fConstructor(c)
   , fBigQL(bigQL)
 {
   
@@ -78,10 +77,11 @@ MainVolume::MainVolume(G4RotationMatrix* pRot, const G4ThreeVector& tlate,
   flid_mesh->SetScale(10.0);
   flid_logical = new G4LogicalVolume(flid_mesh->GetSolid(), G4Material::GetMaterial("FR4"), "logical", 0, 0, 0);
 
-  // QPin
-  auto fpin_mesh = CADMesh::TessellatedMesh::FromOBJ(anode_file);
-  fpin_mesh->SetScale(10.0);
-  fpin_logical = new G4LogicalVolume(fpin_mesh->GetSolid(), G4Material::GetMaterial("G4_Au"), "logical", 0, 0, 0);
+  // Anode
+  auto fanode_mesh = CADMesh::TessellatedMesh::FromOBJ(anode_file);
+  fanode_mesh->SetScale(10.0);
+  fanode_logical = new G4LogicalVolume(
+  fanode_mesh->GetSolid(), G4Material::GetMaterial("G4_Au"), "logical", 0, 0, 0);
 
   // FR4 Spacer
   auto spacer = CADMesh::TessellatedMesh::FromOBJ(spacer_file);
@@ -99,8 +99,9 @@ for (int row = 0; row < 3; ++row) {
         
         
         new G4PVPlacement(nullptr, G4ThreeVector(x, y, 0), flid_logical, "lid", fScint_logical, false, id);
-        new G4PVPlacement(nullptr, G4ThreeVector(x, y, 0.001 * mm), fpin_logical, "pin", fScint_logical, false, id);
-        
+        new G4PVPlacement(nullptr, G4ThreeVector(x, y, 0.001 * mm), fanode_logical, "anode", fScint_logical, false, id);
+
+
         G4double spacer_z = fBigQL ? -1.101 * mm : -0.801 * mm;
         new G4PVPlacement(nullptr, G4ThreeVector(x, y, spacer_z), spacer_logical, "spacer", fScint_logical, false, id);
 
@@ -166,8 +167,8 @@ void MainVolume::VisAttributes()
   G4VisAttributes* flid_ = new G4VisAttributes(G4Colour(0.206, 0.351, 0.186, 1));
   flid_logical->SetVisAttributes(flid_);
   
-  G4VisAttributes* fpin_ = new G4VisAttributes(G4Colour(0.83, 0.69, 0.22, 1));
-  fpin_logical->SetVisAttributes(fpin_);
+  G4VisAttributes* fanode_ = new G4VisAttributes(G4Colour(0.83, 0.69, 0.22, 1));
+  fanode_logical->SetVisAttributes(fanode_);
 
   //G4VisAttributes* fieldrings_ = new G4VisAttributes(G4Colour(0.75, 0.75, 0.75, 0.0));
   //fieldrings_logical->SetVisAttributes(fieldrings_); 
@@ -182,8 +183,8 @@ void MainVolume::SurfaceProperties()
   std::vector<G4double> steel_energy = {2.13*eV, 2.32*eV, 2.54*eV, 2.8*eV, 3.12*eV, 3.5*eV, 3.94*eV, 4.54*eV, 5.72*eV, 10.83*eV, 11.5*eV};
   std::vector<G4double> steel_reflectivity = {0.64, 0.63, 0.62, 0.61, 0.6, 0.58, 0.55, 0.51, 0.45, 0.31, 0.2};
   
-  std::vector<G4double> pin_energy = {12.41*eV, 11.75*eV, 11.10*eV, 10.53*eV, 10.05*eV, 9.63*eV, 9.18*eV, 8.80*eV, 8.41*eV, 8.07*eV, 6.22*eV, 4.96*eV, 4.13*eV, 3.54*eV, 3.09*eV, 2.75*eV, 2.64*eV, 2.49*eV, 2.37*eV, 2.25*eV};
-  std::vector<G4double> pin_reflectivity = {0.11, 0.12, 0.13, 0.13, 0.14, 0.14, 0.15, 0.16, 0.17, 0.17, 0.2, 0.29, 0.34, 0.33, 0.37, 0.37, 0.37, 0.44, 0.64, 0.77};
+  std::vector<G4double> anode_energy = {12.41*eV, 11.75*eV, 11.10*eV, 10.53*eV, 10.05*eV, 9.63*eV, 9.18*eV, 8.80*eV, 8.41*eV, 8.07*eV, 6.22*eV, 4.96*eV, 4.13*eV, 3.54*eV, 3.09*eV, 2.75*eV, 2.64*eV, 2.49*eV, 2.37*eV, 2.25*eV};
+  std::vector<G4double> anode_reflectivity = {0.11, 0.12, 0.13, 0.13, 0.14, 0.14, 0.15, 0.16, 0.17, 0.17, 0.2, 0.29, 0.34, 0.33, 0.37, 0.37, 0.37, 0.44, 0.64, 0.77};
 
   std::vector<G4double> pixelboard_efficiency = {1., 1.};
   std::vector<G4double> pixelboard_reflectivity = {0., 0.};  
@@ -210,12 +211,15 @@ void MainVolume::SurfaceProperties()
   lidPT->AddProperty("REFLECTIVITY", ephoton, pixelboard_reflectivity);
   G4OpticalSurface* Oplid = new G4OpticalSurface("lid", unified, polished, dielectric_metal);
   Oplid->SetMaterialPropertiesTable(lidPT);
-
-  G4MaterialPropertiesTable* pinPT  = new G4MaterialPropertiesTable();
-  pinPT->AddProperty("REFLECTIVITY", pin_energy, pin_reflectivity);
-  G4OpticalSurface* Oppin = new G4OpticalSurface("pinSurface", unified, polished, dielectric_metal);
-  Oppin->SetMaterialPropertiesTable(pinPT);
   
+  G4MaterialPropertiesTable* anodePT = new G4MaterialPropertiesTable();
+  anodePT->AddProperty("REFLECTIVITY", anode_energy, anode_reflectivity);
+  G4OpticalSurface* Opanode = new G4OpticalSurface("anodeSurface", unified, polished, dielectric_metal);
+  Opanode->SetMaterialPropertiesTable(anodePT);
+
+
+
+
   // Field Rings
   //G4MaterialPropertiesTable* fieldringsPT  = new G4MaterialPropertiesTable();
   //fieldringsPT->AddProperty("REFLECTIVITY", steel_energy, steel_reflectivity);
@@ -243,7 +247,7 @@ void MainVolume::SurfaceProperties()
   new G4LogicalSkinSurface("spacer_surface", spacer_logical, Opspacer);
   
   new G4LogicalSkinSurface("lid_surface", flid_logical, Oplid);
-  new G4LogicalSkinSurface("pin_surface", fpin_logical, Oppin);
+  new G4LogicalSkinSurface("anode_surface", fanode_logical, Opanode);
     
 }
 

@@ -66,8 +66,7 @@ void EventAction::BeginOfEventAction(const G4Event*)
   
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void EventAction::EndOfEventAction(const G4Event* anEvent)
 { 
@@ -249,4 +248,4 @@ void EventAction::FlushPhotonData()
   fPhotonEvents.clear();
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···

@@ -4,14 +4,14 @@
 #include "G4RunManager.hh"
 #include "G4Timer.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 namespace
 {
 G4Timer runTimer;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 RunAction::RunAction()
   : fRun(nullptr)
@@ -19,14 +19,14 @@ RunAction::RunAction()
 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 RunAction::~RunAction()
 {
 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 G4Run* RunAction::GenerateRun()
 {
@@ -35,7 +35,7 @@ G4Run* RunAction::GenerateRun()
   return fRun;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void RunAction::BeginOfRunAction(const G4Run*)
 {
@@ -46,7 +46,7 @@ void RunAction::BeginOfRunAction(const G4Run*)
 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void RunAction::EndOfRunAction(const G4Run* run)
 {

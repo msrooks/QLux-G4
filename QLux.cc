@@ -12,7 +12,7 @@
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 int main(int argc, char** argv)
 {
@@ -78,4 +78,4 @@ int main(int argc, char** argv)
   return 0;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+

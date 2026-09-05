@@ -198,7 +198,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   fworld_logical = new G4LogicalVolume(fworld, fVacuum, "world_logical", 0, 0, 0);
   fworld_physical = new G4PVPlacement(0, G4ThreeVector(), fworld_logical, "world", 0, false, 0);
   fworld_logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-  fMainVolume = new MainVolume(0, G4ThreeVector(), fworld_logical, false, 0, this, fBigQL);
+  fMainVolume = new MainVolume(0, G4ThreeVector(), fworld_logical, false, 0, fBigQL);
     
   return fworld_physical;
 }

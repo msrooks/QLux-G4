@@ -9,7 +9,7 @@
 
 G4ThreadLocal G4Allocator<aSeHit>* aSeHitAllocator = nullptr;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 aSeHit::aSeHit()
   : fPixelNumber(-1)
@@ -19,11 +19,11 @@ aSeHit::aSeHit()
   , time(0.0) // ~
 {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 aSeHit::~aSeHit() {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 aSeHit::aSeHit(const aSeHit& right)
   : G4VHit()
@@ -34,7 +34,7 @@ aSeHit::aSeHit(const aSeHit& right)
   fDrawit    = right.fDrawit;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 const aSeHit& aSeHit::operator=(const aSeHit& right)
 {
@@ -45,14 +45,14 @@ const aSeHit& aSeHit::operator=(const aSeHit& right)
   return *this;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 G4bool aSeHit::operator==(const aSeHit& right) const
 {
   return (fPixelNumber == right.fPixelNumber);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void aSeHit::Draw()
 {
@@ -73,6 +73,6 @@ void aSeHit::Draw()
   }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void aSeHit::Print() {}

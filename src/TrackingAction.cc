@@ -6,21 +6,17 @@
 #include "G4Track.hh"
 #include "G4TrackingManager.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 TrackingAction::TrackingAction() {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void TrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-  // Let this be up to the user via vis.mac
-  //  fpTrackingManager->SetStoreTrajectory(true);
-
-  // Use custom trajectory class
+  
   fpTrackingManager->SetTrajectory(new Trajectory(aTrack));
 
-  // This user track information is only relevant to the photons
   fpTrackingManager->SetUserTrackInformation(new UserTrackInformation);
 }
 
@@ -41,7 +37,6 @@ else
   trajectory->SetDrawTrajectory(true);
 }
 
-  // Allow forced drawing if that flag is set.
   if(trackInformation->GetForceDrawTrajectory())
     trajectory->SetDrawTrajectory(true);
 }

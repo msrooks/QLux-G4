@@ -22,7 +22,7 @@
 #include <vector>
 #include <filesystem>
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 namespace
 {
@@ -61,7 +61,7 @@ void FlushdEdxBuffer(const G4String& fileName)
 }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 SteppingAction::SteppingAction(EventAction* ea)
   : fEventAction(ea)
@@ -70,7 +70,7 @@ SteppingAction::SteppingAction(EventAction* ea)
   dEdxBuffer.reserve(dEdxBufferSize);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 SteppingAction::~SteppingAction()
 {
@@ -78,7 +78,7 @@ SteppingAction::~SteppingAction()
 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void SteppingAction::UserSteppingAction(const G4Step* theStep)
 {
@@ -95,8 +95,6 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
   G4OpBoundaryProcessStatus boundaryStatus = Undefined;
   static G4ThreadLocal G4OpBoundaryProcess* boundary = nullptr;
    
-
-  // Comment this section to turn off dedx calculation and writing to file
 
   if(theTrack->GetParentID() == 0)
   {

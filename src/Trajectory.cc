@@ -14,7 +14,7 @@
 
 G4ThreadLocal G4Allocator<Trajectory>* TrajectoryAllocator = nullptr;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 Trajectory::Trajectory()
   : G4Trajectory()
@@ -25,7 +25,7 @@ Trajectory::Trajectory()
   fParticleDefinition = nullptr;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 Trajectory::Trajectory(const G4Track* aTrack)
   : G4Trajectory(aTrack)
@@ -34,7 +34,7 @@ Trajectory::Trajectory(const G4Track* aTrack)
   fParticleDefinition = aTrack->GetDefinition();
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 Trajectory::Trajectory(Trajectory& right)
   : G4Trajectory(right)
@@ -43,11 +43,11 @@ Trajectory::Trajectory(Trajectory& right)
   fParticleDefinition = right.fParticleDefinition;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 Trajectory::~Trajectory() {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void Trajectory::DrawTrajectory() const
 {

@@ -17,7 +17,7 @@
 #include "G4SystemOfUnits.hh"
 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 aSeSD::aSeSD(G4String name)
   : G4VSensitiveDetector(name)
@@ -30,7 +30,7 @@ aSeSD::aSeSD(G4String name)
   collectionName.insert("aSeHitCollection");
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 aSeSD::~aSeSD()
 {
@@ -39,7 +39,7 @@ aSeSD::~aSeSD()
   delete fPixelPositionsZ;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void aSeSD::SetPixelPositions(const std::vector<G4ThreeVector>& positions)
 {
@@ -54,7 +54,7 @@ void aSeSD::SetPixelPositions(const std::vector<G4ThreeVector>& positions)
   }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 void aSeSD::Initialize(G4HCofThisEvent* hitsCE)
 {
@@ -68,24 +68,19 @@ void aSeSD::Initialize(G4HCofThisEvent* hitsCE)
   hitsCE->AddHitsCollection(fHitCID, fHitCollection);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
 G4bool aSeSD::ProcessHits(G4Step*, G4TouchableHistory*) { return false; }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
 
-// Generates a hit and uses the postStepPoint's mother volume replica number
-// PostStepPoint because the hit is generated manually when the photon is
-// detected at the a-Se sensitive surface
 
 G4bool aSeSD::ProcessHits_boundary(const G4Step* aStep, G4TouchableHistory*)
 {
-  // Only process optical photons
   G4Track* track = aStep->GetTrack();
   if(track->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition())
     return false;
   
-  // Continue with a-Se pixel hit processing
   G4int pixelNumber = aStep->GetPostStepPoint()->GetTouchable()->GetReplicaNumber(1);
   G4VPhysicalVolume* physVol = aStep->GetPostStepPoint()->GetTouchable()->GetVolume(1);
   
@@ -101,7 +96,7 @@ G4bool aSeSD::ProcessHits_boundary(const G4Step* aStep, G4TouchableHistory*)
   }
   
   if(hit == nullptr)
-  {  // Pixel not hit before in this event—create a new hit.
+  {  
     hit = new aSeHit();
     hit->SetPixelNumber(pixelNumber);
     hit->SetPixelPhysVol(physVol);
