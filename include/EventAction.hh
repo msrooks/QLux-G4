@@ -28,10 +28,16 @@ class EventAction : public G4UserEventAction
   void SetPixelThreshold(G4int t) { fPixelThreshold = t; }
   
   void SetPhotonFileName(const G4String& name) { fPhotonFileName = name; }
-  void SetEDepFileName(const G4String& name) { fEDepFileName = name; }
 
+  void SetEDepFileName(const G4String& name) { fEDepFileName = name; }
+  void SetEDepOutput(G4bool b) { fEDepOutput = b; }
+  void SetSecondaryFileName(const G4String& name) { fSecondaryFileName = name; }
+  void SetSecondaryOutput(G4bool b) { fSecondaryOutput = b; }
   const G4String& GetPhotonFileName() const { return fPhotonFileName; }
   const G4String& GetEDepFileName() const { return fEDepFileName; }
+  G4bool GetEDepOutput() const { return fEDepOutput; }
+  const G4String& GetSecondaryFileName() const { return fSecondaryFileName; }
+  G4bool GetSecondaryOutput() const { return fSecondaryOutput; }
 
   void FlushPhotonData();
   
@@ -60,8 +66,14 @@ class EventAction : public G4UserEventAction
   G4int fHitCollID;
 
   G4int fVerbose;
+  
   G4String fPhotonFileName = "photons.bin";
   G4String fEDepFileName = "dEdx.bin";
+  G4bool fEDepOutput = false;
+  G4String fSecondaryFileName = "secondary_edep.bin";
+  G4bool fSecondaryOutput = false;
+  
+  
   G4int fPixelThreshold;
   G4bool fForcedrawphotons;
   G4bool fForcenophotons;
@@ -72,6 +84,7 @@ class EventAction : public G4UserEventAction
   G4int fBoundaryAbsorptionCount;
   
   G4int fPixelsAboveThreshold;
+
 };
 
 #endif

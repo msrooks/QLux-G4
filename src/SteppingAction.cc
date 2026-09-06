@@ -38,6 +38,19 @@ struct dEdxRow
   float z_mm;
 };
 
+struct SecondaryRow
+{
+  std::int32_t eventID;
+  std::int32_t trackID;
+  std::int32_t parentID;
+  std::int32_t pdg;
+  float kinetic_MeV;
+  float edep_MeV;
+  float x_mm;
+  float y_mm;
+  float z_mm;
+};
+
 G4Mutex dEdxFileMutex = G4MUTEX_INITIALIZER;
 
 thread_local std::vector<dEdxRow> dEdxBuffer;
@@ -84,6 +97,47 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
 {
   G4Track* theTrack = theStep->GetTrack();
   
+  if(fEventAction->GetSecondaryOutput() && theTrack->GetParentID() > 0)
+  {
+    G4double edep = theStep->GetTotalEnergyDeposit();
+
+    if(edep > 0.0)
+    {
+      G4int eventID =
+        G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+
+      G4ThreeVector pos =
+        theStep->GetPreStepPoint()->GetPosition();
+
+      SecondaryRow row;
+
+      row.eventID = eventID;
+      row.trackID = theTrack->GetTrackID();
+      row.parentID = theTrack->GetParentID();
+      row.pdg = theTrack->GetDefinition()->GetPDGEncoding();
+
+      row.kinetic_MeV =
+        theStep->GetPreStepPoint()->GetKineticEnergy() / MeV;
+
+      row.edep_MeV =
+        edep / MeV;
+
+      row.x_mm = pos.x() / mm;
+      row.y_mm = pos.y() / mm;
+      row.z_mm = pos.z() / mm;
+
+      G4String fileName = "data/" + fEventAction->GetSecondaryFileName();
+
+      std::ofstream file(fileName, std::ios::binary | std::ios::app);
+
+      file.write(
+        reinterpret_cast<const char*>(&row),
+        sizeof(row)
+      );
+    }
+  }
+
+
   if(theTrack->GetCurrentStepNumber() == 1)
     fExpectedNextStatus = Undefined;
 
@@ -96,7 +150,7 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
   static G4ThreadLocal G4OpBoundaryProcess* boundary = nullptr;
    
 
-  if(theTrack->GetParentID() == 0)
+  if(fEventAction->GetEDepOutput() && theTrack->GetParentID() == 0)
   {
     G4double stepLength = theStep->GetStepLength();
     G4double edep = theStep->GetTotalEnergyDeposit();

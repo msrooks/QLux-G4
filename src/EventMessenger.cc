@@ -21,6 +21,21 @@ EventMessenger::EventMessenger(EventAction* event)
   fEDepFileNameCmd->SetGuidance("Set energy-deposition output filename.");
   fEDepFileNameCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  fEDepOutputCmd = new G4UIcmdWithABool("/QLux/EDepOutput", this);
+
+  fEDepOutputCmd->SetGuidance("Enable or disable primary-alpha dE/dx output.");
+  fEDepOutputCmd->SetDefaultValue(false);
+  fEDepOutputCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  fSecondaryFileNameCmd = new G4UIcmdWithAString("/QLux/SecondaryFileName", this);
+  fSecondaryFileNameCmd->SetGuidance("Set secondary-particle output filename.");
+  fSecondaryFileNameCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
+  fSecondaryOutputCmd = new G4UIcmdWithABool("/QLux/SecondaryOutput", this);
+  fSecondaryOutputCmd->SetGuidance("Enable or disable secondary-particle output.");
+  fSecondaryOutputCmd->SetDefaultValue(false);
+  fSecondaryOutputCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+
   fForceDrawPhotonsCmd = new G4UIcmdWithABool("/QLux/forceDrawPhotons", this);
   fForceDrawPhotonsCmd->SetGuidance("Force drawing of photons.");
   fForceDrawPhotonsCmd->SetGuidance(
@@ -42,6 +57,9 @@ EventMessenger::~EventMessenger()
   delete fForceDrawNoPhotonsCmd;
   delete fPhotonFileNameCmd;
   delete fEDepFileNameCmd;
+  delete fEDepOutputCmd;
+  delete fSecondaryFileNameCmd;
+  delete fSecondaryOutputCmd;
 }
 
 //···QLux···✦···QLux···✦···QLux···✦···QLux···✦···QLux···
@@ -60,6 +78,19 @@ void EventMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
   {
     fEventAction->SetEDepFileName(newValue);
   }
+  else if(command == fEDepOutputCmd)
+  {
+    fEventAction->SetEDepOutput(fEDepOutputCmd->GetNewBoolValue(newValue));
+  }
+  else if(command == fSecondaryFileNameCmd)
+  {
+    fEventAction->SetSecondaryFileName(newValue);
+  }
+  else if(command == fSecondaryOutputCmd)
+  {
+    fEventAction->SetSecondaryOutput(fSecondaryOutputCmd->GetNewBoolValue(newValue));
+  }
+
   else if(command == fForceDrawPhotonsCmd)
   {
     fEventAction->SetForceDrawPhotons(fForceDrawPhotonsCmd->GetNewBoolValue(newValue));

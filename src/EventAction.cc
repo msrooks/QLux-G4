@@ -74,7 +74,7 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
     G4cout << "Warning: Event " << anEvent->GetEventID() << " was aborted. Skipping to next event." << G4endl;
     return;  // Skip processing this event without crashing the batch
   }
-
+  
   G4TrajectoryContainer* trajectoryContainer =
     anEvent->GetTrajectoryContainer();
 

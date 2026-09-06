@@ -22,8 +22,12 @@ class EventMessenger : public G4UImessenger
   G4UIcmdWithAnInteger* fVerboseCmd;
   G4UIcmdWithABool* fForceDrawPhotonsCmd;
   G4UIcmdWithABool* fForceDrawNoPhotonsCmd;
+  
   G4UIcmdWithAString* fPhotonFileNameCmd;
   G4UIcmdWithAString* fEDepFileNameCmd;
+  G4UIcmdWithABool* fEDepOutputCmd;
+  G4UIcmdWithAString* fSecondaryFileNameCmd;
+  G4UIcmdWithABool* fSecondaryOutputCmd;
   
 };
 
