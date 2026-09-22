@@ -74,7 +74,7 @@ void DetectorConstruction::DefineMaterials()
   
   
   G4double temperature = 298 * kelvin;
-  G4double pressure = 1 * bar;  
+  G4double pressure = 1.01325 * bar;  // 1 atm
   G4double density = (1.784e-3 * (pressure / bar)) * (g / cm3);  
   
   fGAr =           new G4Material("GAr",           18., 39.948 * g/mole, density, kStateGas, temperature);
@@ -135,41 +135,33 @@ void DetectorConstruction::DefineMaterials()
   std::vector<G4double> GArScint_ENERGY = {100*keV, 1*MeV, 2*MeV, 3*MeV, 4*MeV, 5*MeV, 6*MeV, 7*MeV, 8*MeV, 10*MeV};
   std::vector<G4double> GArmip_Photons = {2400, 24000, 48000, 72000, 96000, 120000, 144000, 168000, 192000, 240000};
   
-  std::vector<G4double> GAralpha_Photons;
-
-  if (pressure == 1 * bar) {
-      GAralpha_Photons = {1.869e3, 18.693e3, 37.386e3, 56.079e3, 74.772e3, 93.465e3, 112.158e3, 130.851e3, 149.554e3, 186.93e3};
-  } else if (pressure == 2 * bar) {
-      GAralpha_Photons = {1.899e3, 18.994e3, 37.988e3, 56.981e3, 75.975e3, 94.969e3, 113.963e3, 132.957e3, 151.950e3, 189.938e3};
-  } else if (pressure == 3 * bar) {
-      GAralpha_Photons = {1.929e3, 19.295e3, 38.589e3, 57.884e3, 77.178e3, 96.473e3, 115.767e3, 135.062e3, 154.357e3, 192.946e3};
-  } else if (pressure == 4 * bar) {
-      GAralpha_Photons = {1.960e3, 19.595e3, 39.191e3, 58.786e3, 78.381e3, 97.977e3, 117.572e3, 137.167e3, 156.763e3, 195.953e3};
-  } else if (pressure == 5 * bar) {
-      GAralpha_Photons = {1.990e3, 19.896e3, 39.792e3, 59.688e3, 79.584e3, 99.480e3, 119.377e3, 139.273e3, 159.169e3, 198.961e3};
-  } else {
-      G4cerr << "Warning: Pressure not in range (1-5 bar). Defaulting to 1 bar." << G4endl;
-      GAralpha_Photons = {1.869e3, 18.693e3, 37.386e3, 56.079e3, 74.772e3, 93.465e3, 112.158e3, 130.851e3, 149.554e3, 186.93e3};
-  }
+  // Alpha scintillation yield: ~19.49k photons/MeV in gaseous Ar; K. Saito et al., IEEE TNS 50 (2003) 2452, doi:10.1109/TNS.2003.820615
+  std::vector<G4double> GAralpha_Photons = {1.949e3, 19.490e3, 38.980e3, 58.470e3, 77.960e3, 97.450e3, 116.940e3, 136.430e3, 155.920e3, 194.900e3};
 
   fGAr_mt = new G4MaterialPropertiesTable();
 
   fGAr_mt->AddProperty("ELECTRONSCINTILLATIONYIELD", GArScint_ENERGY, GArmip_Photons);
   fGAr_mt->AddProperty("SCINTILLATIONCOMPONENT1", GAr_ENERGY, GAr_Spectrum);
   fGAr_mt->AddProperty("SCINTILLATIONCOMPONENT2", GAr_ENERGY, GAr_Spectrum);
-  fGAr_mt->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 5. * ns);
-  fGAr_mt->AddConstProperty("SCINTILLATIONTIMECONSTANT2", 1260. * ns);
   
-  fGAr_mt->AddConstProperty("SCINTILLATIONYIELD1", 0.2307692);
-  fGAr_mt->AddConstProperty("SCINTILLATIONYIELD2", 0.7692307); 
+
+  // Alpha scintillation timing in GAr: τ = 14.7 ns / 3.14 µs; C. Amsler et al., JINST 3 (2008) P02001
+  // Note* This changes all particle time constants e.g., alphas and electrons. For particle specific constants upgrade to G4 >= 11.2  
+  fGAr_mt->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 14.7 * ns);
+  fGAr_mt->AddConstProperty("SCINTILLATIONTIMECONSTANT2", 3140. * ns);
+  
+  // Electrons
+  fGAr_mt->AddConstProperty("ELECTRONSCINTILLATIONYIELD1", 0.2307692);
+  fGAr_mt->AddConstProperty("ELECTRONSCINTILLATIONYIELD2", 0.7692307);
+
+  // Alpha scintillation timing in GAr: fast/slow = 15.4%/84.6%; C. Amsler et al., JINST 3 (2008) P02001
+  fGAr_mt->AddProperty("ALPHASCINTILLATIONYIELD", GArScint_ENERGY, GAralpha_Photons); 
+  fGAr_mt->AddConstProperty("ALPHASCINTILLATIONYIELD1", 0.153846);
+  fGAr_mt->AddConstProperty("ALPHASCINTILLATIONYIELD2", 0.846154);  
 
   fGAr_mt->AddProperty("RINDEX", GArIndexEnergy, GArIndexSpectrum);
   fGAr_mt->AddProperty("ABSLENGTH", GArAbsLenEnergy, GAr_ABSL);
   
-  fGAr_mt->AddProperty("ALPHASCINTILLATIONYIELD", GArScint_ENERGY, GAralpha_Photons); 
-  fGAr_mt->AddConstProperty("ALPHASCINTILLATIONYIELD1", 0.56);
-  fGAr_mt->AddConstProperty("ALPHASCINTILLATIONYIELD2", 0.44); 
-
   fGAr_mt->AddConstProperty("RESOLUTIONSCALE", 1.0);
   fGAr_mt->AddProperty("RAYLEIGH", GArRayleighEnergy, GArRayleighSpectrum);
   
