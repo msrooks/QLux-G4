@@ -12,17 +12,17 @@
 /QLux/eventVerbose 0
 
 # Photon output file
-/QLux/PhotonFileName QLB100k_37mm.bin
+/QLux/PhotonFileName data/QLB1k_37mm.bin
 
 # Alpha energy-deposition output
 # true = save, false = disable
 /QLux/EDepOutput true
-/QLux/EDepFileName QLB100k_37mm_dEdx.bin
+/QLux/EDepFileName data/QLB1k_37mm_dEdx.bin
 
 # Secondary-particle output
 # true = save, false = disable
 /QLux/SecondaryOutput true
-/QLux/SecondaryFileName QLB100k_37mm_secondaries.bin
+/QLux/SecondaryFileName data/QLB1k_37mm_secondaries.bin
 
 # Source position: x y z relative to the anode plane
 /gun/position 0 0 37 mm
@@ -32,5 +32,5 @@
 /random/setSeeds 123 987
 
 # Number of simulated events
-/run/beamOn 100000
+/run/beamOn 1000
 

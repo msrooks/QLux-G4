@@ -64,8 +64,11 @@ void FlushdEdxBuffer(const G4String& fileName)
 
   G4AutoLock lock(&dEdxFileMutex);
 
-  std::filesystem::create_directories("data");
-  std::ofstream file("data/" + fileName, std::ios::binary | std::ios::app);
+  std::filesystem::path outputPath(fileName.c_str());
+  if (outputPath.has_parent_path())
+    std::filesystem::create_directories(outputPath.parent_path());
+
+  std::ofstream file(fileName, std::ios::binary | std::ios::app);
 
   file.write(reinterpret_cast<const char*>(dEdxBuffer.data()),
              dEdxBuffer.size() * sizeof(dEdxRow));
@@ -126,7 +129,12 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
       row.y_mm = pos.y() / mm;
       row.z_mm = pos.z() / mm;
 
-      G4String fileName = "data/" + fEventAction->GetSecondaryFileName();
+      G4String fileName = fEventAction->GetSecondaryFileName();
+
+      std::filesystem::path outputPath(fileName.c_str());
+
+      if(outputPath.has_parent_path())
+        std::filesystem::create_directories(outputPath.parent_path());
 
       std::ofstream file(fileName, std::ios::binary | std::ios::app);
 

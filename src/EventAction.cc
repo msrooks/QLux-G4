@@ -212,8 +212,13 @@ void EventAction::FlushPhotonData()
   {
     G4String fileName = fPhotonEvents[first].fileName;
 
+    std::filesystem::path outputPath(fileName.c_str());
+
+    if(outputPath.has_parent_path())
+      std::filesystem::create_directories(outputPath.parent_path());
+
     std::ofstream file(
-        "data/" + fileName,
+        fileName,
         std::ios::binary | std::ios::app);
 
     size_t i = first;
