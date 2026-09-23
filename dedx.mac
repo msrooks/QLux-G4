@@ -1,18 +1,36 @@
+# QLux run macro
+
 /run/verbose 0
 /control/verbose 0
 /tracking/verbose 0
 /process/optical/verbose 0
 
-/QLux/Geometry Little
+# Geometry: Big or Little
+/QLux/Geometry Big
 
 /run/initialize
 /QLux/eventVerbose 0
 
-/QLux/PhotonFileName QLL100k_37mm.bin
+# Photon output file
+/QLux/PhotonFileName QLB100k_37mm.bin
 
-/QLux/EDepFileName QLL100k_37mm_dEdx.bin
+# Alpha energy-deposition output
+# true = save, false = disable
+/QLux/EDepOutput true
+/QLux/EDepFileName QLB100k_37mm_dEdx.bin
 
+# Secondary-particle output
+# true = save, false = disable
+/QLux/SecondaryOutput true
+/QLux/SecondaryFileName QLB100k_37mm_secondaries.bin
+
+# Source position: x y z relative to the anode plane
 /gun/position 0 0 37 mm
 
-/run/beamOn 1000
+# Random seed: always use two integers
+# Same seeds reproduce the same random sequence
+/random/setSeeds 123 987
+
+# Number of simulated events
+/run/beamOn 100000
 

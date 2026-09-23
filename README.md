@@ -95,6 +95,12 @@ An example configuration is provided in `dedx.mac`.
 
 A typical simulation macro selects the detector geometry, initializes Geant4, specifies the desired output files, configures the source position, and starts the requested number of events.
 
+Random seeds can be set in the macro with:
+
+`/random/setSeeds seed1 seed2`
+
+Reusing the same two integer seeds reproduces the same random sequence.
+
 ## Software
 
 QLux is built using the Geant4 simulation toolkit and incorporates code and application patterns adapted from Geant4 examples.
